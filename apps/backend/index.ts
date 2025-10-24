@@ -2,7 +2,7 @@ import express from "express";
 // Import the TypeScript source from the workspace package. Using the `.js` extension
 // here fails when the compiled .js doesn't exist. Point to the TS file (or omit
 // the extension) so Bun can resolve it directly.
-import { prismaClient } from "../../packages/db/index.ts";
+import { prismaClient } from "db/client";
 
 
 const app = express();
@@ -25,9 +25,9 @@ app.get("/users", (req, res) => {
 
 app.post("/user", (req,res) =>{
     const {username, password} = req.body;
-    if (!username || !password) {
-        return  res.status(400).json({error: "Username and password are required"});
-    }
+    // if (!username || !password) {
+    //     return  res.status(400).json({error: "Username and password are required"});
+    // }
     prismaClient.user.create({
         data: {
             username,
