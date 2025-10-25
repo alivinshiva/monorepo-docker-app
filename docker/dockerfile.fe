@@ -1,17 +1,51 @@
-FROM oven/bun:1
+# FROM oven/bun:1
 
-ARG DATABASE_URL
+# ARG DATABASE_URL
+
+# WORKDIR /usr/src/app
+
+# COPY . .
+# RUN apt-get update -y && apt-get install -y openssl
+# RUN bun install
+
+# RUN bun run generate:db
+# RUN bunx turbo build 
+
+# EXPOSE 3000
+
+# # Start the frontend application
+# CMD ["bun", "start:frontend"]
+
+
+FROM oven/bun:1
 
 WORKDIR /usr/src/app
 
-COPY . .
-RUN apt-get update -y && apt-get install -y openssl
-RUN bun install
+# Declare build arguments
+ARG DATABASE_URL
+ARG NODE_ENV=production
 
+# Set as environment variables
+ENV DATABASE_URL=$DATABASE_URL
+ENV NODE_ENV=$NODE_ENV
+ENV NODE_ENV=$NODE_ENV
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Install system dependencies
+RUN apt-get update -y && apt-get install -y openssl git
+
+# Copy everything
+COPY . .
+
+# Install dependencies
+RUN bun install --frozen-lockfile
+
+# Generate Prisma client
 RUN bun run generate:db
-RUN DATABASE_URL=$DATABASE_URL bunx turbo build 
+
+# Build with environment variables available
+RUN bunx turbo build --filter=web...
 
 EXPOSE 3000
 
-# Start the frontend application
-CMD ["bun", "start:frontend"]
+CMD ["bun", "run", "start:frontend"]

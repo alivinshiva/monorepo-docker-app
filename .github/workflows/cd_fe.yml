@@ -30,6 +30,6 @@ jobs:
           context: .
           file: ./docker/dockerfile.fe
           build-args: |
-            DATABASE_URL="postgresql://postgres:mysecretpassword@localhost:5432/postgres"
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
           push: true
           tags: alivinshiva/monorepo-fe:${{ github.sha }}
