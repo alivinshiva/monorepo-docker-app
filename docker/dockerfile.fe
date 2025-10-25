@@ -11,13 +11,13 @@ RUN apt-get update -y && apt-get install -y openssl git
 
 COPY . .
 
-# Install dependencies
+# Install deps
 RUN echo "===== INSTALLING DEPENDENCIES =====" && bun install
 
-# Generate Prisma Client
+# Generate Prisma
 RUN echo "===== GENERATING PRISMA =====" && \
     cd packages/db && bunx prisma generate && \
-    echo "✅ Prisma client generated successfully"
+    ls -la node_modules/@prisma/client
 
 # Build frontend
 RUN echo "===== BUILDING FRONTEND =====" && \
