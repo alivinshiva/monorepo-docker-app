@@ -3,20 +3,19 @@
 # build the docker image
 # push the docker image to docker hub
 # deploy the docker image to production server using ssh
+name: CD Backend
 
-name : CD Backend
-on: 
+on:
   push:
-    branch: 
+    branches:
       - main
 
-  jobs:
-    deplpy:
-      runs-on: ubuntu:latest
-      name: Deploy monorepo-be to ec2
-    # steps to build the docker image and push to docker hub
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy monorepo-be to ec2
     steps:
-      - name: pushing code to github
+      - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Log in to Docker Hub
@@ -29,6 +28,6 @@ on:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: /docker/dockerfile.be
+          file: ./docker/dockerfile.be
           push: true
           tags: alivinshiva/monorepo-be:${{ github.sha }}
