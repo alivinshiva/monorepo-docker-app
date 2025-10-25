@@ -73,7 +73,7 @@ RUN apt-get update -y && apt-get install -y openssl git
 COPY . .
 
 # Install dependencies
-RUN bun install --frozen-lockfile
+RUN bun install 
 
 # Generate Prisma client BEFORE building
 # Make sure this generates to packages/db/generated/prisma/client
