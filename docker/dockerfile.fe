@@ -1,89 +1,42 @@
-# # FROM oven/bun:1
-
-# # ARG DATABASE_URL
-
-# # WORKDIR /usr/src/app
-
-# # COPY . .
-# # RUN apt-get update -y && apt-get install -y openssl
-# # RUN bun install
-
-# # RUN bun run generate:db
-# # RUN bunx turbo build 
-
-# # EXPOSE 3000
-
-# # # Start the frontend application
-# # CMD ["bun", "start:frontend"]
-
-
-# FROM oven/bun:1
-
-# WORKDIR /usr/src/app
-
-# # Declare build arguments
-# ARG DATABASE_URL
-# ARG NODE_ENV=production
-
-# # Set as environment variables
-# ENV DATABASE_URL=$DATABASE_URL
-# ENV NODE_ENV=$NODE_ENV
-# ENV NODE_ENV=$NODE_ENV
-# ENV NEXT_TELEMETRY_DISABLED=1
-
-# # Install system dependencies
-# RUN apt-get update -y && apt-get install -y openssl git
-
-# # Copy everything
-# COPY . .
-
-# # Install dependencies
-# RUN bun install
-
-# # Generate Prisma client
-# RUN bun run generate:db
-
-# # Build with environment variables available
-# RUN bunx turbo build --filter=web...
-
-# EXPOSE 3000
-
-# CMD ["bun", "run", "start:frontend"]
-
-
-
 FROM oven/bun:1
 
 WORKDIR /usr/src/app
 
-# Declare build arguments
 ARG DATABASE_URL
-ARG NODE_ENV=production
 
-# Set as environment variables
+
 ENV DATABASE_URL=$DATABASE_URL
-ENV NODE_ENV=$NODE_ENV
-ENV NODE_ENV=$NODE_ENV
+ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Install system dependencies
 RUN apt-get update -y && apt-get install -y openssl git
 
-# Copy everything
 COPY . .
 
-# Install dependencies
-RUN bun install 
+# Step 1: Install
+RUN echo "===== INSTALLING DEPENDENCIES =====" && \
+    bun install 
 
-# Generate Prisma client BEFORE building
-# Make sure this generates to packages/db/generated/prisma/client
-RUN cd packages/db && bunx prisma generate
+# Step 2: Generate Prisma
+RUN echo "===== GENERATING PRISMA =====" && \
+    cd packages/db && \
+    bunx prisma generate && \
+    echo "Prisma generated successfully"
 
-# Verify Prisma client was generated
-RUN ls -la packages/db/generated/prisma/client || echo "Prisma client not found!"
+# Step 3: Verify Prisma client exists
+RUN echo "===== VERIFYING PRISMA CLIENT =====" && \
+    (ls -la packages/db/node_modules/@prisma/client || echo "Default location not found") && \
+    (ls -la packages/db/generated/prisma/client 2>/dev/null || echo "Custom location not found")
 
-# Build with Turbo
-RUN bunx turbo build 
+# Step 4: Check what db package exports
+RUN echo "===== DB PACKAGE CONTENTS =====" && \
+    cat packages/db/index.ts && \
+    ls -la packages/db/
+
+# Step 5: Try building just web (not through turbo)
+RUN echo "===== BUILDING WEB APP DIRECTLY =====" && \
+    cd apps/web && \
+    bun run build
 
 EXPOSE 3000
 CMD ["bun", "run", "start:frontend"]
