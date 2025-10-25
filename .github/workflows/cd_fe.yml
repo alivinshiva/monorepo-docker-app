@@ -36,7 +36,7 @@ jobs:
           push: true
           tags: alivinshiva/monorepo-fe:${{ github.sha }}
 
-           deploy to vm /ec2 instance
+          #  deploy to vm /ec2 instance
       - name: Deploy to vm
         run: |
           echo "${{ secrets.SSH_PVT_KEY }}" > ~/ssh_key
@@ -45,8 +45,8 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.KNOWN_HOST }}" > ~/.ssh/known_hosts
 
-          ssh -i ~/ssh_key -o StrictHostKeyChecking=no ubuntu@3.7.73.221 << 'EOF'
-            docker pull alivinshiva/monorepo-be:${{ github.sha }}
+          ssh -i ~/ssh_key -o StrictHostKeyChecking=no ubuntu@3.110.210.2 << 'EOF'
+            docker pull alivinshiva/monorepo-fe:${{ github.sha }}
             docker stop monorepo-fe || true
             docker rm monorepo-fe || true
             docker run -d -p 3000:3000 --name monorepo-fe alivinshiva/monorepo-fe:${{ github.sha }}
