@@ -1,7 +1,7 @@
 FROM oven/bun:1
 
 WORKDIR /usr/src/app
-ARG DATABASE_URL
+ARG DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
 ENV DATABASE_URL=$DATABASE_URL
 ## Can you optimise this?
 COPY . .

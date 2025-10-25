@@ -1,0 +1,33 @@
+# here we will write yml to deploy our backend service to production using github actions.
+# steps
+# build the docker image
+# push the docker image to docker hub
+# deploy the docker image to production server using ssh
+name: CD WS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy monorepo-ws to ec2
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Build and push to docker hub
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./docker/dockerfile.ws
+          push: true
+          tags: alivinshiva/monorepo-ws:${{ github.sha }}
