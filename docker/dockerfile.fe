@@ -9,7 +9,7 @@ RUN apt-get update -y && apt-get install -y openssl
 RUN bun install
 
 RUN bun run generate:db
-RUN DATABASE_URL=$DATABASE_URL bunx turbo build --filter=web...
+RUN DATABASE_URL=$DATABASE_URL bunx turbo build 
 
 EXPOSE 3000
 
