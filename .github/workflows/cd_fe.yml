@@ -46,10 +46,10 @@ jobs:
           echo "${{ secrets.KNOWN_HOST }}" > ~/.ssh/known_hosts
 
           ssh -i ~/ssh_key -o StrictHostKeyChecking=no ubuntu@3.110.210.2 << 'EOF'
-            docker pull alivinshiva/monorepo-fe:${{ github.sha }}
-            docker stop monorepo-fe || true
-            docker rm monorepo-fe || true
-            docker run -d -p 3000:3000 --name monorepo-fe alivinshiva/monorepo-fe:${{ github.sha }}
+            sudo docker pull alivinshiva/monorepo-fe:${{ github.sha }}
+            sudo docker stop monorepo-fe || true
+            sudo docker rm monorepo-fe || true
+            sudo docker run -d -p 3000:3000 --name monorepo-fe alivinshiva/monorepo-fe:${{ github.sha }}
 
 
 
