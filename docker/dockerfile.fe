@@ -1,0 +1,19 @@
+FROM oven/bun:1
+
+ARG DB_URL="postgresql://neondb_owner:npg_IdNKJny95gYh@ep-divine-hat-a4nnc6qe-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+ENV DB_URL=${DB_URL}
+
+WORKDIR /usr/src/app
+
+COPY . .
+RUN apt-get update -y && apt-get install -y openssl
+
+RUN bun install
+
+RUN bun run generate:db
+RUN DB_URL=$DB_URL bunx turbo build --filter=web...
+
+EXPOSE 3000
+
+# Start the frontend application
+CMD ["bun", "start:frontend"]

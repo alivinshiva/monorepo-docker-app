@@ -1,5 +1,5 @@
 {
-  "extends": "@repo/typescript-config/react-library.json",
+  // Removed invalid "extends" reference because '@repo/typescript-config/react-library.json' was not found; replace this comment with a correct relative path or package name if you intend to extend a shared config.
   "compilerOptions": {
     "outDir": "dist"
   },
