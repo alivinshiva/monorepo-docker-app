@@ -1,8 +1,7 @@
 FROM oven/bun:1
 
-ARG DB_URL="postgresql://neondb_owner:npg_IdNKJny95gYh@ep-divine-hat-a4nnc6qe-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
-ENV DB_URL=${DB_URL}
-
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
 WORKDIR /usr/src/app
 
 COPY . .
