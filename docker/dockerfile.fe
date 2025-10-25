@@ -83,7 +83,7 @@ RUN cd packages/db && bunx prisma generate
 RUN ls -la packages/db/generated/prisma/client || echo "Prisma client not found!"
 
 # Build with Turbo
-RUN bunx turbo build --filter=web...
+RUN bunx turbo build 
 
 EXPOSE 3000
 CMD ["bun", "run", "start:frontend"]
