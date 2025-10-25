@@ -3,8 +3,6 @@ FROM oven/bun:1
 WORKDIR /usr/src/app
 
 ARG DATABASE_URL
-
-
 ENV DATABASE_URL=$DATABASE_URL
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -13,29 +11,17 @@ RUN apt-get update -y && apt-get install -y openssl git
 
 COPY . .
 
-# Step 1: Install
-RUN echo "===== INSTALLING DEPENDENCIES =====" && \
-    bun install 
+# Install dependencies
+RUN echo "===== INSTALLING DEPENDENCIES =====" && bun install
 
-# Step 2: Generate Prisma
+# Generate Prisma Client
 RUN echo "===== GENERATING PRISMA =====" && \
-    cd packages/db && \
-    bunx prisma generate && \
-    echo "Prisma generated successfully"
+    cd packages/db && bunx prisma generate && \
+    echo "✅ Prisma client generated successfully"
 
-# Step 3: Verify Prisma client exists
-RUN echo "===== VERIFYING PRISMA CLIENT =====" && \
-    (ls -la packages/db/node_modules/@prisma/client || echo "Default location not found") && \
-    (ls -la packages/db/generated/prisma/client 2>/dev/null || echo "Custom location not found")
-
-# Step 4: Check what db package exports
-RUN echo "===== DB PACKAGE CONTENTS =====" && \
-    cat packages/db/index.ts && \
-    ls -la packages/db/
-
-# Step 5: Try building just web (not through turbo)
-RUN cd apps/web
-RUN bun run build
+# Build frontend
+RUN echo "===== BUILDING FRONTEND =====" && \
+    cd apps/web && bun run build
 
 EXPOSE 3000
 CMD ["bun", "run", "start:frontend"]
