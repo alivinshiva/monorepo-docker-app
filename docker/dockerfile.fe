@@ -34,8 +34,7 @@ RUN echo "===== DB PACKAGE CONTENTS =====" && \
     ls -la packages/db/
 
 # Step 5: Try building just web (not through turbo)
-RUN echo "===== BUILDING WEB APP DIRECTLY =====" && \
-    cd apps/web && \
+RUN cd apps/web && \
     bun run build
 
 EXPOSE 3000
